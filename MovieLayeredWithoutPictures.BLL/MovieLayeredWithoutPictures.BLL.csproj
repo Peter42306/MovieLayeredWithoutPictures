@@ -14,4 +14,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MovieLayeredWithoutPictures.DAL\MovieLayeredWithoutPictures.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
