@@ -19,9 +19,9 @@ namespace MovieLayeredWithoutPictures.BLL.Services
         // Automapper позволяет проецировать одну модель на другую, что позволяет сократить
         public async Task<IEnumerable<MovieDTO>> GetMovies()
         {
-            var config=new MapperConfiguration(cfg=>cfg.CreateMap<Movie,MovieDTO>());
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Movie, MovieDTO>());
             var mapper = new Mapper(config);
-            return mapper.Map<IEnumerable<Movie>,IEnumerable<MovieDTO>>(await UnitOfWork.Movies.GetAll());
+            return mapper.Map<IEnumerable<Movie>, IEnumerable<MovieDTO>>(await UnitOfWork.Movies.GetAll());
 
 
             //// Без использования AutoMapper
@@ -42,9 +42,9 @@ namespace MovieLayeredWithoutPictures.BLL.Services
 
         public async Task<MovieDTO> GetMovie(int id)
         {
-            var movie=await UnitOfWork.Movies.Get(id);
+            var movie = await UnitOfWork.Movies.Get(id);
 
-            if (movie==null)
+            if (movie == null)
             {
                 throw new ValidationException("Неверное значение");
             }
@@ -78,7 +78,7 @@ namespace MovieLayeredWithoutPictures.BLL.Services
                 ReleaseYear = movie.ReleaseYear,
                 Description = movie.Description
             };
-        }        
+        }
 
         public async Task CreateMovie(MovieDTO movieDTO)
         {
@@ -98,18 +98,44 @@ namespace MovieLayeredWithoutPictures.BLL.Services
 
         public async Task UpdateMovie(MovieDTO movieDTO)
         {
-            var movie = new Movie
-            {
-                Id = movieDTO.Id,
-                Title = movieDTO.Title,
-                Director = movieDTO.Director,
-                Genre = movieDTO.Genre,
-                ReleaseYear = movieDTO.ReleaseYear,
-                Description = movieDTO.Description
-            };
+            var movie = await UnitOfWork.Movies.Get(movieDTO.Id);
 
-            UnitOfWork.Movies.Update(movie);            
-            await UnitOfWork.Save();
+            if (movie != null)
+            {
+                // Обновляем свойства фильма из DTO
+                movie.Id = movieDTO.Id;
+                movie.Title = movieDTO.Title;
+                movie.Director = movieDTO.Director;
+                movie.Genre = movieDTO.Genre;
+                movie.ReleaseYear = movieDTO.ReleaseYear;
+                movie.Description = movieDTO.Description;
+
+                // Сохраняем изменения в репозитории
+                //UnitOfWork.Movies.Update(movie);
+
+
+                await UnitOfWork.Save();
+            }
+            else
+            {
+                throw new ValidationException("Movie was not found");
+            }
+
+
+
+
+            //var movie = new Movie
+            //{
+            //    Id = movieDTO.Id,
+            //    Title = movieDTO.Title,
+            //    Director = movieDTO.Director,
+            //    Genre = movieDTO.Genre,
+            //    ReleaseYear = movieDTO.ReleaseYear,
+            //    Description = movieDTO.Description
+            //};
+
+            //UnitOfWork.Movies.Update(movie);            
+            //await UnitOfWork.Save();
         }
         public async Task DeleteMovie(int id)
         {

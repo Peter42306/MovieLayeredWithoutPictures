@@ -23,13 +23,13 @@ namespace MovieLayeredWithoutPictures.DAL.Repositories
         {
             get
             {
-                if (_movieRepository==null)
+                if (_movieRepository == null)
                 {
                     _movieRepository = new MovieRepository(_movieContext);
                 }
                 return _movieRepository;
             }
-        }        
+        }
 
         public async Task Save()
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MovieLayeredWithoutPictures.BLL.DTO;
 using MovieLayeredWithoutPictures.BLL.Interfaces;
 using System.ComponentModel.DataAnnotations;
@@ -168,10 +169,31 @@ namespace MovieLayeredWithoutPictures.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _movieService.UpdateMovie(movie);
-                return View("~/Views/Movie/Index.cshtml", await _movieService.GetMovies());
+                try
+                {
+                    await _movieService.UpdateMovie(movie);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await MovieExists(movie.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
             return View(movie);
+
+            //if (ModelState.IsValid)
+            //{
+            //    await _movieService.UpdateMovie(movie);
+            //    return View("~/Views/Movie/Index.cshtml", await _movieService.GetMovies());
+            //}
+            //return View(movie);
         }
 
         ///////////////////////////////////////////////////////////////////////////////////////////

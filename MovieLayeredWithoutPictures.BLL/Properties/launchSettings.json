@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "MovieLayeredWithoutPictures.BLL": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:50689;http://localhost:50690"
+    }
+  }
+}
