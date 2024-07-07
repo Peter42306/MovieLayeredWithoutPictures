@@ -7,39 +7,30 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MovieLayeredWithoutPictures.BLL.Services
 {
+    // Реализация сервиса для работы с фильмами
     public class MovieService : IMovieService
     {
         IUnitOfWork UnitOfWork { get; set; }
 
+        // Конструктор, принимающий IUnitOfWork как параметр
         public MovieService(IUnitOfWork unitOfWork)
         {
             UnitOfWork = unitOfWork;
         }
 
         // Automapper позволяет проецировать одну модель на другую, что позволяет сократить
+        // Метод для получения всех фильмов и преобразования их в DTO с помощью AutoMapper
         public async Task<IEnumerable<MovieDTO>> GetMovies()
         {
+            // Конфигурация AutoMapper для отображения сущности Movie в DTO MovieDTO
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Movie, MovieDTO>());
             var mapper = new Mapper(config);
+
+            // Получаем все фильмы из репозитория и маппим их в MovieDTO
             return mapper.Map<IEnumerable<Movie>, IEnumerable<MovieDTO>>(await UnitOfWork.Movies.GetAll());
-
-
-            //// Без использования AutoMapper
-            //// Получаем все фильмы из репозитория
-            //var movies = await UnitOfWork.Movies.GetAll();
-
-            //// Преобразуем каждую сущность Movie в MovieDTO
-            //return movies.Select(m => new MovieDTO
-            //{
-            //    Id = m.Id,
-            //    Title = m.Title,
-            //    Director = m.Director,
-            //    Genre = m.Genre,
-            //    ReleaseYear = m.ReleaseYear,
-            //    Description = m.Description
-            //});
         }
 
+        // Метод для получения фильма по id
         public async Task<MovieDTO> GetMovie(int id)
         {
             var movie = await UnitOfWork.Movies.Get(id);
@@ -49,6 +40,7 @@ namespace MovieLayeredWithoutPictures.BLL.Services
                 throw new ValidationException("Неверное значение");
             }
 
+            // Возвращаем DTO фильма
             return new MovieDTO
             {
                 Id = movie.Id,
@@ -60,6 +52,7 @@ namespace MovieLayeredWithoutPictures.BLL.Services
             };
         }
 
+        // Метод для получения фильма по названию
         public async Task<MovieDTO> GetMovie(string title)
         {
             var movie = await UnitOfWork.Movies.Get(title);
@@ -69,6 +62,7 @@ namespace MovieLayeredWithoutPictures.BLL.Services
                 throw new ValidationException("Неверное значение");
             }
 
+            // Возвращаем DTO фильма
             return new MovieDTO
             {
                 Id = movie.Id,
@@ -80,8 +74,10 @@ namespace MovieLayeredWithoutPictures.BLL.Services
             };
         }
 
+        // Метод для создания нового фильма
         public async Task CreateMovie(MovieDTO movieDTO)
         {
+            // Создаем объект Movie из DTO
             var movie = new Movie
             {
                 Id = movieDTO.Id,
@@ -92,12 +88,15 @@ namespace MovieLayeredWithoutPictures.BLL.Services
                 Description = movieDTO.Description
             };
 
+            // Добавляем фильм в репозиторий и сохраняем изменения
             await UnitOfWork.Movies.Create(movie);
             await UnitOfWork.Save();
         }
 
+        // Метод для обновления информации о фильме
         public async Task UpdateMovie(MovieDTO movieDTO)
         {
+            // Получаем фильм по id
             var movie = await UnitOfWork.Movies.Get(movieDTO.Id);
 
             if (movie != null)
@@ -110,35 +109,19 @@ namespace MovieLayeredWithoutPictures.BLL.Services
                 movie.ReleaseYear = movieDTO.ReleaseYear;
                 movie.Description = movieDTO.Description;
 
-                // Сохраняем изменения в репозитории
-                //UnitOfWork.Movies.Update(movie);
-
-
+                // Сохраняем изменения в репозитории                
                 await UnitOfWork.Save();
             }
             else
             {
-                throw new ValidationException("Movie was not found");
+                throw new ValidationException("Фильм не найден");
             }
-
-
-
-
-            //var movie = new Movie
-            //{
-            //    Id = movieDTO.Id,
-            //    Title = movieDTO.Title,
-            //    Director = movieDTO.Director,
-            //    Genre = movieDTO.Genre,
-            //    ReleaseYear = movieDTO.ReleaseYear,
-            //    Description = movieDTO.Description
-            //};
-
-            //UnitOfWork.Movies.Update(movie);            
-            //await UnitOfWork.Save();
         }
+
+        // Метод для удаления фильма по id
         public async Task DeleteMovie(int id)
         {
+            // Удаляем фильм из репозитория и сохраняем изменения
             await UnitOfWork.Movies.Delete(id);
             await UnitOfWork.Save();
         }

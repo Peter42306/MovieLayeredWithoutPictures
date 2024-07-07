@@ -1,9 +1,7 @@
 ﻿@model MovieLayeredWithoutPictures.BLL.DTO.MovieDTO
 
 @{
-    ViewBag.Title = "Edit";
-    //ViewData["Title"] = "Edit";
-    //Layout = null;
+    ViewBag.Title = "Edit";    
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,9 +9,8 @@
     <h1 class="text-lg-center; text-muted;">Это страница Views/Movie/Edit</h1>
     <hr />
     <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
+        <div class="col-md-12">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">                
                 <input type="hidden" asp-for="Id" />
                 <div class="form-group">
                     <label asp-for="Title" class="control-label">Название фильма</label>

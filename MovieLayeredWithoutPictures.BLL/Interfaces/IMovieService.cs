@@ -2,6 +2,7 @@
 
 namespace MovieLayeredWithoutPictures.BLL.Interfaces
 {
+    // Определяет контракт для работы с фильмами в приложении через слой бизнес-логики
     public interface IMovieService
     {
         Task<IEnumerable<MovieDTO>> GetMovies();

@@ -3,19 +3,23 @@ using MovieLayeredWithoutPictures.DAL.Entities;
 
 namespace MovieLayeredWithoutPictures.DAL.EF
 {
+    // Класс MovieContext наследуется от DbContext и используется для взаимодействия с базой данных
     public class MovieContext : DbContext
     {
-        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Movie> Movies { get; set; } // Свойство для работы с таблицей Movies в базе данных
 
+        // Конструктор, который принимает параметры конфигурации и передает их в базовый класс
         public MovieContext(DbContextOptions<MovieContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
 
+        // Настройка модели при создании базы данных
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Заполнение таблицы Movies начальными данными
             modelBuilder.Entity<Movie>().HasData(
                 new Movie
                 {

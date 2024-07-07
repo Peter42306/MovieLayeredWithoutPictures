@@ -1,5 +1,6 @@
 ﻿namespace MovieLayeredWithoutPictures.DAL.Interfaces
 {
+    // Интерфейс IRepository, определяющий общий контракт для работы с сущностями
     public interface IRepository<T> where T : class
     {
         Task<IEnumerable<T>> GetAll();
